@@ -795,9 +795,8 @@ document.querySelectorAll(
 async function useMyLocation() {
     if (!navigator.geolocation) {
         showError(
-            "Geolocation is not supported by your browser."
+            "Location is not supported by your browser. Please search for a city instead."
         );
-
         return;
     }
 
@@ -805,21 +804,20 @@ async function useMyLocation() {
 
     setLoading(true, "your location");
     showDashboardState("loading");
+    setStatus("Getting your location and weather...");
 
     try {
-        const position = await new Promise(
-            (resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(
-                    resolve,
-                    reject,
-                    {
-                        enableHighAccuracy: false,
-                        timeout: 10000,
-                        maximumAge: 300000
-                    }
-                );
-            }
-        );
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(
+                resolve,
+                reject,
+                {
+                    enableHighAccuracy: false,
+                    timeout: 15000,
+                    maximumAge: 300000
+                }
+            );
+        });
 
         if (requestId !== activeRequest) {
             return;
@@ -828,6 +826,7 @@ async function useMyLocation() {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
 
+        // Get weather directly from the GPS coordinates.
         const weather = await getWeather(
             latitude,
             longitude
@@ -837,49 +836,18 @@ async function useMyLocation() {
             return;
         }
 
-        const reverseUrl = new URL(
-            "https://geocoding-api.open-meteo.com/v1/reverse"
-        );
-
-        reverseUrl.search = new URLSearchParams({
+        const location = {
+            name: "Your Location",
+            admin1: "",
+            country: "",
             latitude: latitude,
-            longitude: longitude,
-            count: "1",
-            language: "en",
-            format: "json"
-        });
-
-        let location;
-
-        try {
-            const reverseData = await fetchJson(reverseUrl);
-
-            location = reverseData.results?.[0];
-
-        } catch (reverseError) {
-            console.warn(
-                "Could not identify the location:",
-                reverseError
-            );
-        }
-
-        if (requestId !== activeRequest) {
-            return;
-        }
-
-        if (!location) {
-            location = {
-                name: "Your Location",
-                country: "",
-                latitude: latitude,
-                longitude: longitude
-            };
-        }
+            longitude: longitude
+        };
 
         renderWeather(location, weather);
 
         if (cityInput) {
-            cityInput.value = location.name;
+            cityInput.value = "";
         }
 
     } catch (error) {
@@ -887,25 +855,22 @@ async function useMyLocation() {
             return;
         }
 
-        console.error(
-            "Location weather error:",
-            error
-        );
+        console.error("Location weather error:", error);
 
         let message =
-            "Could not get weather for your location.";
+            "Could not load weather for your location. Please try searching for a city instead.";
 
-        if (error.code === 1) {
-            message =
-                "Location permission was denied. Please allow location access.";
-        } else if (error.code === 2) {
-            message =
-                "Your location is currently unavailable.";
-        } else if (error.code === 3) {
-            message =
-                "Getting your location took too long. Please try again.";
-        } else if (error.message) {
-            message = error.message;
+        if (error && typeof error.code === "number") {
+            if (error.code === 1) {
+                message =
+                    "Location permission was denied. Please allow location access in your browser settings.";
+            } else if (error.code === 2) {
+                message =
+                    "Your location is unavailable. Please check your device's location services.";
+            } else if (error.code === 3) {
+                message =
+                    "Getting your location took too long. Please try again.";
+            }
         }
 
         showError(message);
