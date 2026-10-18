@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#174d80">
+
+    <title>Weatherly | Weather Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="background-image" aria-hidden="true"></div>
+    <div class="page-overlay" aria-hidden="true"></div>
+
+    <main class="dashboard">
+
+        <!-- HEADER -->
+        <header class="top-bar">
+
+            <a class="brand" href="#" aria-label="Weatherly home">
+                <span class="brand-mark" aria-hidden="true">🌤️</span>
+                <span>Weatherly</span>
+            </a>
+
+            <nav
+                id="mobile-menu"
+                class="header-actions"
+                aria-label="Dashboard controls"
+            >
+
+                <button
+                    id="location-button"
+                    class="location-button"
+                    type="button"
+                >
+                    📍 <span>Use My Location</span>
+                </button>
+
+                <!-- TEMPERATURE SWITCH -->
+                <div class="unit-switch" aria-label="Temperature unit">
+
+                    <button
+                        id="unit-celsius"
+                        class="unit-option is-active"
+                        data-temperature-unit="celsius"
+                        type="button"
+                        aria-pressed="true"
+                    >
+                        °C
+                    </button>
+
+                    <button
+                        id="unit-toggle"
+                        class="unit-option"
+                        data-temperature-unit="fahrenheit"
+                        type="button"
+                        aria-pressed="false"
+                    >
+                        °F
+                    </button>
+
+                </div>
+
+                <!-- SETTINGS BUTTON -->
+                <button
+                    id="settings-button"
+                    class="icon-button"
+                    type="button"
+                    aria-label="Open settings"
+                >
+                    ⚙
+                </button>
+
+                <!-- MOBILE MENU BUTTON -->
+                <!-- MOBILE SETTINGS BUTTON -->
+                <button
+                    id="mobile-menu-button"
+                    class="icon-button mobile-menu-button"
+                    type="button"
+                    aria-label="Open settings"
+                    aria-expanded="false"
+                    aria-controls="settings-dialog"
+                >
+                    ⚙
+                </button>
+
+            </nav>
+
+        </header>
+
+
+        <!-- HERO -->
+        <section class="hero" aria-labelledby="page-heading">
+
+            <p class="eyebrow">
+                YOUR PERSONAL WEATHER GUIDE
+            </p>
+
+            <h1 id="page-heading">
+                Find the Weather<br>
+                <span>Anywhere</span>
+            </h1>
+
+            <p class="hero-description">
+                Get current weather and a 7-day forecast
+                for any city in the world.
+            </p>
+
+
+            <!-- CITY SEARCH -->
+            <form id="search-form" class="search-form">
+
+                <label class="sr-only" for="city-input">
+                    Search for a city
+                </label>
+
+                <span class="search-icon" aria-hidden="true">⌕</span>
+
+                <input
+                    id="city-input"
+                    name="city"
+                    type="search"
+                    placeholder="Search for a city (e.g. Yangon, Bangkok, Tokyo)"
+                    autocomplete="off"
+                    required
+                >
+
+                <button id="search-button" type="submit">
+                    Search <span aria-hidden="true">→</span>
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- STATUS MESSAGE -->
+        <p
+            id="status-message"
+            class="status-message"
+            role="status"
+            aria-live="polite"
+        >
+            Search for a city to see its weather.
+        </p>
+
+
+        <!-- LOADING PANEL -->
+        <section
+            id="search-loading-panel"
+            class="search-loading-panel"
+            aria-live="polite"
+            aria-label="Loading weather"
+            hidden
+        >
+
+            <div class="search-loading-icon" aria-hidden="true">
+                ☁️
+            </div>
+
+            <div
+                class="search-loading-spinner"
+                aria-hidden="true"
+            ></div>
+
+            <h2>Getting weather data...</h2>
+
+            <p id="loading-city-message">
+                Preparing your forecast. Please wait a moment.
+            </p>
+
+        </section>
+
+
+        <!-- CURRENT WEATHER -->
+        <section
+            id="current-weather"
+            class="current-weather"
+            aria-label="Current weather"
+            hidden
+        >
+
+            <div class="city-details">
+
+                <p class="section-label">
+                    CURRENT WEATHER
+                </p>
+
+                <h2 id="city-name"></h2>
+
+                <p id="city-country" class="city-country"></p>
+
+                <p id="current-date" class="current-date"></p>
+
+            </div>
+
+
+            <!-- TEMPERATURE SUMMARY -->
+            <div class="current-summary">
+
+                <p
+                    id="current-icon"
+                    class="current-icon"
+                    aria-hidden="true"
+                ></p>
+
+                <div class="temperature-block">
+
+                    <p
+                        id="current-temperature"
+                        class="current-temperature"
+                    ></p>
+
+                    <p
+                        id="current-condition"
+                        class="current-condition"
+                    ></p>
+
+                </div>
+
+            </div>
+
+
+            <!-- WEATHER DETAILS -->
+            <div class="weather-details">
+
+                <div class="detail-row">
+
+                    <span class="detail-symbol" aria-hidden="true">
+                        💧
+                    </span>
+
+                    <span class="detail-label">
+                        Humidity
+                    </span>
+
+                    <strong id="current-humidity">--%</strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-symbol" aria-hidden="true">
+                        〰
+                    </span>
+
+                    <span class="detail-label">
+                        Wind
+                    </span>
+
+                    <strong id="current-wind">-- km/h</strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-symbol" aria-hidden="true">
+                        🌡️
+                    </span>
+
+                    <span class="detail-label">
+                        Feels like
+                    </span>
+
+                    <strong id="current-feels-like">--°</strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SEVEN-DAY FORECAST -->
+        <section
+            id="forecast-section"
+            class="forecast-section"
+            aria-labelledby="forecast-heading"
+            hidden
+        >
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        PLAN AHEAD
+                    </p>
+
+                    <h2 id="forecast-heading">
+                        7-Day Forecast
+                    </h2>
+
+                </div>
+
+                <span class="forecast-caption">
+                    Daily outlook
+                </span>
+
+            </div>
+
+            <div
+                id="forecast-cards"
+                class="forecast-grid"
+            ></div>
+
+        </section>
+
+
+        <!-- EMPTY AND ERROR STATES -->
+        <section
+            id="state-examples"
+            class="state-examples"
+            aria-label="Weather dashboard status"
+        >
+
+            <article
+                id="error-state-card"
+                class="state-card"
+                hidden
+            >
+
+                <div
+                    class="state-illustration error-illustration"
+                    aria-hidden="true"
+                >
+                    !
+                </div>
+
+                <h3>Unable to load weather</h3>
+
+                <p id="error-description">
+                    Something went wrong. Please try again.
+                </p>
+
+                <button
+                    id="try-again-button"
+                    class="try-again-button"
+                    type="button"
+                >
+                    Try Again
+                </button>
+
+            </article>
+
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <p>
+                &copy; 2026 Aung Kaung Sett. All rights reserved.
+            </p>
+        </footer>
+
+    </main>
+
+
+    <!-- SETTINGS DIALOG -->
+    <dialog id="settings-dialog" class="settings-dialog">
+
+        <form method="dialog" class="settings-header">
+
+            <h2>Settings</h2>
+
+            <button
+                class="icon-button close-settings"
+                type="submit"
+                aria-label="Close settings"
+            >
+                ×
+            </button>
+
+        </form>
+
+
+        <!-- LOCATION SETTING -->
+        <div class="settings-row">
+
+            <span>📍 Use My Location</span>
+
+            <button
+                id="settings-location-button"
+                class="settings-action"
+                type="button"
+            >
+                Use location
+            </button>
+
+        </div>
+
+
+        <!-- TEMPERATURE SETTING -->
+        <div class="settings-row">
+
+            <span>🌡️ Temperature Unit</span>
+
+            <div
+                class="unit-switch settings-unit-switch"
+                aria-label="Settings temperature unit"
+            >
+
+                <button
+                    id="settings-celsius"
+                    class="unit-option is-active"
+                    data-temperature-unit="celsius"
+                    type="button"
+                    aria-pressed="true"
+                >
+                    °C
+                </button>
+
+                <button
+                    id="settings-fahrenheit"
+                    class="unit-option"
+                    data-temperature-unit="fahrenheit"
+                    type="button"
+                    aria-pressed="false"
+                >
+                    °F
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ABOUT -->
+        <div class="settings-row">
+
+            <span>ⓘ About</span>
+
+            <span class="settings-muted">
+                Weatherly
+            </span>
+
+        </div>
+
+    </dialog>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
