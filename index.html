@@ -76,7 +76,6 @@
                 </button>
 
                 <!-- MOBILE MENU BUTTON -->
-                <!-- MOBILE SETTINGS BUTTON -->
                 <button
                     id="mobile-menu-button"
                     class="icon-button mobile-menu-button"
@@ -144,9 +143,46 @@
             class="status-message"
             role="status"
             aria-live="polite"
+        ></p>
+
+
+        <!-- EMPTY AND ERROR STATES -->
+        <section
+            id="state-examples"
+            class="state-examples"
+            aria-label="Weather dashboard status"
         >
-            Search for a city to see its weather.
-        </p>
+
+            <article
+                id="error-state-card"
+                class="state-card"
+                hidden
+            >
+
+                <div
+                    class="state-illustration error-illustration"
+                    aria-hidden="true"
+                >
+                    !
+                </div>
+
+                <h3>Unable to load weather</h3>
+
+                <p id="error-description">
+                    Something went wrong. Please try again.
+                </p>
+
+                <button
+                    id="try-again-button"
+                    class="try-again-button"
+                    type="button"
+                >
+                    Try Again
+                </button>
+
+            </article>
+
+        </section>
 
 
         <!-- LOADING PANEL -->
@@ -313,50 +349,13 @@
         </section>
 
 
-        <!-- EMPTY AND ERROR STATES -->
-        <section
-            id="state-examples"
-            class="state-examples"
-            aria-label="Weather dashboard status"
-        >
-
-            <article
-                id="error-state-card"
-                class="state-card"
-                hidden
-            >
-
-                <div
-                    class="state-illustration error-illustration"
-                    aria-hidden="true"
-                >
-                    !
-                </div>
-
-                <h3>Unable to load weather</h3>
-
-                <p id="error-description">
-                    Something went wrong. Please try again.
-                </p>
-
-                <button
-                    id="try-again-button"
-                    class="try-again-button"
-                    type="button"
-                >
-                    Try Again
-                </button>
-
-            </article>
-
-        </section>
-
-
         <!-- FOOTER -->
         <footer class="site-footer">
+
             <p>
                 &copy; 2026 Aung Kaung Sett. All rights reserved.
             </p>
+
         </footer>
 
     </main>
@@ -445,6 +444,7 @@
     </dialog>
 
 
+    <!-- JAVASCRIPT -->
     <script src="script.js"></script>
 
 </body>

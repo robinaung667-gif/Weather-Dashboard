@@ -20,9 +20,6 @@ const currentWeather = document.querySelector("#current-weather");
 const forecastSection = document.querySelector("#forecast-section");
 const forecastCards = document.querySelector("#forecast-cards");
 
-const unitToggle = document.querySelector("#unit-toggle");
-const unitCelsius = document.querySelector("#unit-celsius");
-
 const cityNameElement = document.querySelector("#city-name");
 const cityCountryElement = document.querySelector("#city-country");
 const currentDateElement = document.querySelector("#current-date");
@@ -50,9 +47,6 @@ const settingsLocationButton = document.querySelector(
 const settingsButton = document.querySelector("#settings-button");
 const settingsDialog = document.querySelector("#settings-dialog");
 
-const settingsCelsius = document.querySelector("#settings-celsius");
-const settingsFahrenheit = document.querySelector("#settings-fahrenheit");
-
 const mobileMenuButton = document.querySelector("#mobile-menu-button");
 
 
@@ -73,145 +67,34 @@ let activeRequest = 0;
 // ========================================
 
 const weatherDescriptions = {
-    0: {
-        description: "Clear sky",
-        icon: "☀️"
-    },
-
-    1: {
-        description: "Mainly clear",
-        icon: "🌤️"
-    },
-
-    2: {
-        description: "Partly cloudy",
-        icon: "⛅"
-    },
-
-    3: {
-        description: "Overcast",
-        icon: "☁️"
-    },
-
-    45: {
-        description: "Fog",
-        icon: "🌫️"
-    },
-
-    48: {
-        description: "Depositing rime fog",
-        icon: "🌫️"
-    },
-
-    51: {
-        description: "Light drizzle",
-        icon: "🌦️"
-    },
-
-    53: {
-        description: "Moderate drizzle",
-        icon: "🌦️"
-    },
-
-    55: {
-        description: "Dense drizzle",
-        icon: "🌧️"
-    },
-
-    56: {
-        description: "Light freezing drizzle",
-        icon: "🌧️"
-    },
-
-    57: {
-        description: "Dense freezing drizzle",
-        icon: "🌧️"
-    },
-
-    61: {
-        description: "Slight rain",
-        icon: "🌧️"
-    },
-
-    63: {
-        description: "Moderate rain",
-        icon: "🌧️"
-    },
-
-    65: {
-        description: "Heavy rain",
-        icon: "🌧️"
-    },
-
-    66: {
-        description: "Light freezing rain",
-        icon: "🌧️"
-    },
-
-    67: {
-        description: "Heavy freezing rain",
-        icon: "🌧️"
-    },
-
-    71: {
-        description: "Slight snowfall",
-        icon: "🌨️"
-    },
-
-    73: {
-        description: "Moderate snowfall",
-        icon: "🌨️"
-    },
-
-    75: {
-        description: "Heavy snowfall",
-        icon: "❄️"
-    },
-
-    77: {
-        description: "Snow grains",
-        icon: "❄️"
-    },
-
-    80: {
-        description: "Slight rain showers",
-        icon: "🌦️"
-    },
-
-    81: {
-        description: "Moderate rain showers",
-        icon: "🌧️"
-    },
-
-    82: {
-        description: "Violent rain showers",
-        icon: "⛈️"
-    },
-
-    85: {
-        description: "Slight snow showers",
-        icon: "🌨️"
-    },
-
-    86: {
-        description: "Heavy snow showers",
-        icon: "❄️"
-    },
-
-    95: {
-        description: "Thunderstorm",
-        icon: "⛈️"
-    },
-
-    96: {
-        description: "Thunderstorm with slight hail",
-        icon: "⛈️"
-    },
-
-    99: {
-        description: "Thunderstorm with heavy hail",
-        icon: "⛈️"
-    }
+    0: { description: "Clear sky", icon: "☀️" },
+    1: { description: "Mainly clear", icon: "🌤️" },
+    2: { description: "Partly cloudy", icon: "⛅" },
+    3: { description: "Overcast", icon: "☁️" },
+    45: { description: "Fog", icon: "🌫️" },
+    48: { description: "Depositing rime fog", icon: "🌫️" },
+    51: { description: "Light drizzle", icon: "🌦️" },
+    53: { description: "Moderate drizzle", icon: "🌦️" },
+    55: { description: "Dense drizzle", icon: "🌧️" },
+    56: { description: "Light freezing drizzle", icon: "🌧️" },
+    57: { description: "Dense freezing drizzle", icon: "🌧️" },
+    61: { description: "Slight rain", icon: "🌧️" },
+    63: { description: "Moderate rain", icon: "🌧️" },
+    65: { description: "Heavy rain", icon: "🌧️" },
+    66: { description: "Light freezing rain", icon: "🌧️" },
+    67: { description: "Heavy freezing rain", icon: "🌧️" },
+    71: { description: "Slight snowfall", icon: "🌨️" },
+    73: { description: "Moderate snowfall", icon: "🌨️" },
+    75: { description: "Heavy snowfall", icon: "❄️" },
+    77: { description: "Snow grains", icon: "❄️" },
+    80: { description: "Slight rain showers", icon: "🌦️" },
+    81: { description: "Moderate rain showers", icon: "🌧️" },
+    82: { description: "Violent rain showers", icon: "⛈️" },
+    85: { description: "Slight snow showers", icon: "🌨️" },
+    86: { description: "Heavy snow showers", icon: "❄️" },
+    95: { description: "Thunderstorm", icon: "⛈️" },
+    96: { description: "Thunderstorm with slight hail", icon: "⛈️" },
+    99: { description: "Thunderstorm with heavy hail", icon: "⛈️" }
 };
 
 
@@ -266,11 +149,13 @@ function setStatus(message) {
 
 // ========================================
 // 8. SHOW DASHBOARD STATE
+// FIXED: ERROR CARD VISIBILITY
 // ========================================
 
 function showDashboardState(state) {
     if (stateExamples) {
-        stateExamples.hidden = state !== "empty";
+        stateExamples.hidden =
+            state !== "empty" && state !== "error";
     }
 
     if (currentWeather) {
@@ -283,6 +168,10 @@ function showDashboardState(state) {
 
     if (errorStateCard) {
         errorStateCard.hidden = state !== "error";
+    }
+
+    if (searchLoadingPanel && state !== "loading") {
+        searchLoadingPanel.hidden = true;
     }
 }
 
@@ -322,10 +211,18 @@ function setLoading(isLoading, city = "") {
 // ========================================
 
 function showError(message) {
+    if (searchLoadingPanel) {
+        searchLoadingPanel.hidden = true;
+    }
+
     showDashboardState("error");
 
     if (errorDescription) {
         errorDescription.textContent = message;
+    }
+
+    if (errorStateCard) {
+        errorStateCard.hidden = false;
     }
 
     setStatus(message);
@@ -334,20 +231,72 @@ function showError(message) {
 
 // ========================================
 // 11. FETCH JSON DATA
+// NETWORK AND API ERROR HANDLING
 // ========================================
 
 async function fetchJson(url) {
-    const response = await fetch(url);
+    const controller = new AbortController();
 
-    if (!response.ok) {
-        throw new Error(
-            `Request failed. Status: ${response.status}`
-        );
+    const timeoutId = setTimeout(() => {
+        controller.abort();
+    }, 15000);
+
+    try {
+        const response = await fetch(url, {
+            signal: controller.signal
+        });
+
+        // API server errors
+        if (response.status >= 500) {
+            throw new Error(
+                "The weather service is temporarily unavailable. Please try again later."
+            );
+        }
+
+        // Other unsuccessful HTTP responses
+        if (!response.ok) {
+            throw new Error(
+                "The request could not be completed. Please try again."
+            );
+        }
+
+        const data = await response.json();
+
+        // Handle API responses that contain an error
+        if (data.error) {
+            throw new Error(
+                data.reason ||
+                "The weather service returned an error. Please try again."
+            );
+        }
+
+        return data;
+
+    } catch (error) {
+        // Request timeout
+        if (error.name === "AbortError") {
+            throw new Error(
+                "The request took too long. Please check your connection and try again."
+            );
+        }
+
+        // Network errors
+        if (
+            error instanceof TypeError ||
+            error.message === "Failed to fetch"
+        ) {
+            throw new Error(
+                "Unable to connect to the weather service. Please check your internet connection and try again."
+            );
+        }
+
+        // Pass other errors to the calling function
+        throw error;
+
+    } finally {
+        clearTimeout(timeoutId);
     }
-
-    return await response.json();
 }
-
 
 // ========================================
 // 12. FIND CITY
@@ -405,7 +354,7 @@ async function getWeather(latitude, longitude) {
             "temperature_2m_min"
         ].join(","),
 
-        timezone: "Asia/Yangon",
+        timezone: "auto",
 
         forecast_days: "7"
     });
@@ -626,13 +575,19 @@ function renderWeather(location, weather) {
 
 // ========================================
 // 18. SEARCH WEATHER
+// FIXED: ERROR FEEDBACK
 // ========================================
 
 async function searchWeather(city) {
     const trimmedCity = city.trim();
 
     if (!trimmedCity) {
-        showError("Please enter a city name.");
+        setLoading(false);
+
+        showError(
+            "Please enter a city name."
+        );
+
         return;
     }
 
@@ -676,7 +631,10 @@ async function searchWeather(city) {
             return;
         }
 
-        console.error("Weather search error:", error);
+        console.error(
+            "Weather search error:",
+            error
+        );
 
         showError(
             error.message ||
@@ -710,7 +668,10 @@ function setTemperatureUnit(unit) {
     ).forEach((button) => {
         const active = unit === "celsius";
 
-        button.classList.toggle("is-active", active);
+        button.classList.toggle(
+            "is-active",
+            active
+        );
 
         button.setAttribute(
             "aria-pressed",
@@ -723,7 +684,10 @@ function setTemperatureUnit(unit) {
     ).forEach((button) => {
         const active = unit === "fahrenheit";
 
-        button.classList.toggle("is-active", active);
+        button.classList.toggle(
+            "is-active",
+            active
+        );
 
         button.setAttribute(
             "aria-pressed",
@@ -759,11 +723,14 @@ function setTemperatureUnit(unit) {
 // ========================================
 
 if (searchForm) {
-    searchForm.addEventListener("submit", (event) => {
-        event.preventDefault();
+    searchForm.addEventListener(
+        "submit",
+        (event) => {
+            event.preventDefault();
 
-        searchWeather(cityInput.value);
-    });
+            searchWeather(cityInput.value);
+        }
+    );
 }
 
 
@@ -797,27 +764,34 @@ async function useMyLocation() {
         showError(
             "Location is not supported by your browser. Please search for a city instead."
         );
+
         return;
     }
 
     const requestId = ++activeRequest;
 
     setLoading(true, "your location");
+
     showDashboardState("loading");
-    setStatus("Getting your location and weather...");
+
+    setStatus(
+        "Getting your location and weather..."
+    );
 
     try {
-        const position = await new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(
-                resolve,
-                reject,
-                {
-                    enableHighAccuracy: false,
-                    timeout: 15000,
-                    maximumAge: 300000
-                }
-            );
-        });
+        const position = await new Promise(
+            (resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(
+                    resolve,
+                    reject,
+                    {
+                        enableHighAccuracy: false,
+                        timeout: 15000,
+                        maximumAge: 300000
+                    }
+                );
+            }
+        );
 
         if (requestId !== activeRequest) {
             return;
@@ -826,7 +800,6 @@ async function useMyLocation() {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
 
-        // Get weather directly from the GPS coordinates.
         const weather = await getWeather(
             latitude,
             longitude
@@ -855,7 +828,10 @@ async function useMyLocation() {
             return;
         }
 
-        console.error("Location weather error:", error);
+        console.error(
+            "Location weather error:",
+            error
+        );
 
         let message =
             "Could not load weather for your location. Please try searching for a city instead.";
@@ -864,9 +840,11 @@ async function useMyLocation() {
             if (error.code === 1) {
                 message =
                     "Location permission was denied. Please allow location access in your browser settings.";
+
             } else if (error.code === 2) {
                 message =
                     "Your location is unavailable. Please check your device's location services.";
+
             } else if (error.code === 3) {
                 message =
                     "Getting your location took too long. Please try again.";
@@ -918,15 +896,19 @@ if (settingsLocationButton) {
 // ========================================
 
 if (settingsButton && settingsDialog) {
-    settingsButton.addEventListener("click", () => {
-        if (
-            typeof settingsDialog.showModal === "function"
-        ) {
-            settingsDialog.showModal();
-        } else {
-            settingsDialog.hidden = false;
+    settingsButton.addEventListener(
+        "click",
+        () => {
+            if (
+                typeof settingsDialog.showModal === "function"
+            ) {
+                settingsDialog.showModal();
+
+            } else {
+                settingsDialog.hidden = false;
+            }
         }
-    });
+    );
 }
 
 
@@ -934,16 +916,30 @@ if (settingsButton && settingsDialog) {
 // 26. SETTINGS TEMPERATURE BUTTONS
 // ========================================
 
+const settingsCelsius = document.querySelector(
+    "#settings-celsius"
+);
+
+const settingsFahrenheit = document.querySelector(
+    "#settings-fahrenheit"
+);
+
 if (settingsCelsius) {
-    settingsCelsius.addEventListener("click", () => {
-        setTemperatureUnit("celsius");
-    });
+    settingsCelsius.addEventListener(
+        "click",
+        () => {
+            setTemperatureUnit("celsius");
+        }
+    );
 }
 
 if (settingsFahrenheit) {
-    settingsFahrenheit.addEventListener("click", () => {
-        setTemperatureUnit("fahrenheit");
-    });
+    settingsFahrenheit.addEventListener(
+        "click",
+        () => {
+            setTemperatureUnit("fahrenheit");
+        }
+    );
 }
 
 
@@ -952,48 +948,59 @@ if (settingsFahrenheit) {
 // ========================================
 
 if (tryAgainButton) {
-    tryAgainButton.addEventListener("click", () => {
-        if (cityInput && cityInput.value.trim()) {
-            searchWeather(cityInput.value);
-        } else if (latestLocation) {
-            searchWeather(latestLocation.name);
-        } else {
-            showDashboardState("empty");
+    tryAgainButton.addEventListener(
+        "click",
+        () => {
+            if (cityInput && cityInput.value.trim()) {
+                searchWeather(cityInput.value);
 
-            setStatus(
-                "Enter a city to check its weather."
-            );
+            } else if (
+                latestLocation &&
+                latestLocation.name !== "Your Location"
+            ) {
+                searchWeather(latestLocation.name);
+
+            } else {
+                showDashboardState("empty");
+
+                setStatus(
+                    "Enter a city to check its weather."
+                );
+            }
         }
-    });
+    );
 }
 
 
 // ========================================
 // 28. MOBILE MENU BUTTON
-// Open the existing Settings popup
 // ========================================
 
 if (mobileMenuButton) {
-    mobileMenuButton.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
+    mobileMenuButton.addEventListener(
+        "click",
+        (event) => {
+            event.preventDefault();
+            event.stopPropagation();
 
-        if (!settingsDialog) {
-            return;
-        }
-
-        if (
-            typeof settingsDialog.showModal === "function"
-        ) {
-            if (!settingsDialog.open) {
-                settingsDialog.showModal();
-            } else {
-                settingsDialog.close();
+            if (!settingsDialog) {
+                return;
             }
-        } else {
-            settingsDialog.hidden = false;
+
+            if (
+                typeof settingsDialog.showModal === "function"
+            ) {
+                if (!settingsDialog.open) {
+                    settingsDialog.showModal();
+                } else {
+                    settingsDialog.close();
+                }
+
+            } else {
+                settingsDialog.hidden = false;
+            }
         }
-    });
+    );
 }
 
 
@@ -1002,6 +1009,7 @@ if (mobileMenuButton) {
 // ========================================
 
 showDashboardState("empty");
+
 setLoading(false);
 
 
@@ -1042,6 +1050,7 @@ try {
 
     if (lastCity && cityInput) {
         cityInput.value = lastCity;
+
         searchWeather(lastCity);
     }
 
@@ -1055,7 +1064,6 @@ try {
 
 // ========================================
 // 32. AUTOMATIC DAILY WEATHER UPDATE
-// Myanmar timezone: Asia/Yangon
 // ========================================
 
 function getMyanmarDateKey() {
@@ -1076,19 +1084,30 @@ function checkForNewMyanmarDay() {
         lastMyanmarDate = currentMyanmarDate;
 
         if (latestLocation) {
-            searchWeather(latestLocation.name);
+            if (latestLocation.name === "Your Location") {
+                useMyLocation();
+            } else {
+                searchWeather(latestLocation.name);
+            }
         }
     }
 }
 
-setInterval(checkForNewMyanmarDay, 30000);
+setInterval(
+    checkForNewMyanmarDay,
+    30000
+);
 
-document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) {
-        checkForNewMyanmarDay();
+document.addEventListener(
+    "visibilitychange",
+    () => {
+        if (!document.hidden) {
+            checkForNewMyanmarDay();
+        }
     }
-});
+);
 
-window.addEventListener("focus", () => {
-    checkForNewMyanmarDay();
-});
+window.addEventListener(
+    "focus",
+    checkForNewMyanmarDay
+);
